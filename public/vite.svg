@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect x="10" y="30" width="80" height="50" rx="5" fill="#8B4513"/>
+  <rect x="15" y="35" width="70" height="40" rx="3" fill="#D2691E"/>
+  <g fill="#FFD700">
+    <circle cx="25" cy="45" r="2"/>
+    <circle cx="35" cy="50" r="2"/>
+    <circle cx="45" cy="48" r="2"/>
+    <circle cx="55" cy="52" r="2"/>
+    <circle cx="65" cy="47" r="2"/>
+    <circle cx="75" cy="51" r="2"/>
+  </g>
+  <rect x="20" y="60" width="60" height="10" fill="#A9A9A9"/>
+  <g fill="#C0C0C0">
+    <rect x="22" y="55" width="2" height="15"/>
+    <rect x="28" y="55" width="2" height="15"/>
+    <rect x="34" y="55" width="2" height="15"/>
+    <rect x="40" y="55" width="2" height="15"/>
+    <rect x="46" y="55" width="2" height="15"/>
+    <rect x="52" y="55" width="2" height="15"/>
+    <rect x="58" y="55" width="2" height="15"/>
+    <rect x="64" y="55" width="2" height="15"/>
+    <rect x="70" y="55" width="2" height="15"/>
+    <rect x="76" y="55" width="2" height="15"/>
+  </g>
+</svg>

@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Christmas Theme (Default) */
+:root {
+  --color-bg: #1a0a0a;
+  --color-bg-dark: #0d0505;
+  --color-bg-gradient-start: #2d1515;
+  --color-bg-gradient-end: #1a0a0a;
+  --color-panel: rgba(30, 15, 15, 0.9);
+  --color-panel-border: rgba(218, 165, 32, 0.3);
+  --color-accent: #daa520;
+  --color-accent-hover: #f4c430;
+  --color-accent-dark: #b8860b;
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+  --color-text-gold: #daa520;
+  --color-comb: #6b7280;
+  --color-comb-light: #9ca3af;
+  --color-comb-glow: rgba(218, 165, 32, 0.8);
+  --color-pin: #daa520;
+  --color-record: #dc2626;
+  --color-record-glow: rgba(220, 38, 38, 0.4);
+  --color-tab-active: #daa520;
+  --color-tab-inactive: rgba(75, 55, 55, 0.8);
+  --color-button-bg: rgba(75, 55, 55, 0.6);
+  --color-button-border: rgba(218, 165, 32, 0.4);
+  --color-slider-track: rgba(255, 255, 255, 0.2);
+  --color-slider-thumb: #daa520;
+  --color-toggle-bg: rgba(75, 55, 55, 0.8);
+  --color-toggle-active: #daa520;
+}
+
+/* Winter Theme */
+[data-theme="winter"] {
+  --color-bg: #0a1628;
+  --color-bg-dark: #050d1a;
+  --color-bg-gradient-start: #1a2d4a;
+  --color-bg-gradient-end: #0a1628;
+  --color-panel: rgba(15, 25, 45, 0.9);
+  --color-panel-border: rgba(135, 206, 250, 0.3);
+  --color-accent: #87ceeb;
+  --color-accent-hover: #add8e6;
+  --color-accent-dark: #5f9ea0;
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+  --color-text-gold: #87ceeb;
+  --color-comb: #6b7280;
+  --color-comb-light: #9ca3af;
+  --color-comb-glow: rgba(135, 206, 250, 0.8);
+  --color-pin: #87ceeb;
+  --color-record: #ef4444;
+  --color-record-glow: rgba(239, 68, 68, 0.4);
+  --color-tab-active: #87ceeb;
+  --color-tab-inactive: rgba(45, 65, 95, 0.8);
+  --color-button-bg: rgba(45, 65, 95, 0.6);
+  --color-button-border: rgba(135, 206, 250, 0.4);
+  --color-slider-track: rgba(255, 255, 255, 0.2);
+  --color-slider-thumb: #87ceeb;
+  --color-toggle-bg: rgba(45, 65, 95, 0.8);
+  --color-toggle-active: #87ceeb;
+}
+
+/* Classic Theme */
+[data-theme="classic"] {
+  --color-bg: #1a1a1a;
+  --color-bg-dark: #0d0d0d;
+  --color-bg-gradient-start: #2d2d2d;
+  --color-bg-gradient-end: #1a1a1a;
+  --color-panel: rgba(30, 30, 30, 0.9);
+  --color-panel-border: rgba(184, 134, 11, 0.3);
+  --color-accent: #b8860b;
+  --color-accent-hover: #daa520;
+  --color-accent-dark: #8b6914;
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.6);
+  --color-text-gold: #b8860b;
+  --color-comb: #6b7280;
+  --color-comb-light: #9ca3af;
+  --color-comb-glow: rgba(184, 134, 11, 0.8);
+  --color-pin: #b8860b;
+  --color-record: #dc2626;
+  --color-record-glow: rgba(220, 38, 38, 0.4);
+  --color-tab-active: #b8860b;
+  --color-tab-inactive: rgba(60, 60, 60, 0.8);
+  --color-button-bg: rgba(60, 60, 60, 0.6);
+  --color-button-border: rgba(184, 134, 11, 0.4);
+  --color-slider-track: rgba(255, 255, 255, 0.2);
+  --color-slider-thumb: #b8860b;
+  --color-toggle-bg: rgba(60, 60, 60, 0.8);
+  --color-toggle-active: #b8860b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-end) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  background: var(--color-toggle-bg);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch.active {
+  background: var(--color-toggle-active);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle-switch.active::after {
+  transform: translateX(24px);
+}
+
+/* Glow animation for comb teeth */
+@keyframes toothGlow {
+  0% {
+    filter: drop-shadow(0 0 2px var(--color-comb-glow));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px var(--color-comb-glow));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px var(--color-comb-glow));
+  }
+}
+
+.tooth-active {
+  animation: toothGlow 0.3s ease-out;
+}
+
+/* Piano key press animation */
+@keyframes keyPress {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.key-active {
+  animation: keyPress 0.15s ease-out;
+}
+
+/* Record button pulse */
+@keyframes recordPulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--color-record-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 15px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.recording-active {
+  animation: recordPulse 1.5s infinite;
+}
+
+/* Drum rotation */
+@keyframes drumRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
