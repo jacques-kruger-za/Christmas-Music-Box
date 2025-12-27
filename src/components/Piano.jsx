@@ -1,8 +1,5 @@
 import { NOTES, NOTE_DISPLAY_NAMES, BLACK_KEY_INDICES, WHITE_KEY_LABELS, BLACK_KEY_LABELS } from '../data/constants'
-import { getNotePosition } from '../utils/notePositions'
-
-// Padding to align piano keys with comb teeth (matches comb's plateMargin + 1)
-const PIANO_PADDING_PERCENT = 4 // ~4% on each side to align with teeth
+import { COMB_PADDING_LEFT_PERCENT, COMB_PADDING_RIGHT_PERCENT } from './Comb'
 
 export default function Piano({ activeNotes = new Set(), onNotePlay }) {
   // Calculate white key positions for black keys
@@ -26,7 +23,13 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
   const blackKeyWidth = whiteKeyWidth * 0.65
 
   return (
-    <div className="w-full" style={{ padding: `0 ${PIANO_PADDING_PERCENT}%` }}>
+    <div
+      className="w-full"
+      style={{
+        paddingLeft: `${COMB_PADDING_LEFT_PERCENT}%`,
+        paddingRight: `${COMB_PADDING_RIGHT_PERCENT}%`
+      }}
+    >
       {/* Piano keyboard */}
       <div className="relative h-36 mb-1">
         {/* White keys */}

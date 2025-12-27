@@ -1,5 +1,9 @@
 import { NOTES } from '../data/constants'
 
+// Export these for piano alignment
+export const COMB_PADDING_LEFT_PERCENT = 4 // Where first tooth starts
+export const COMB_PADDING_RIGHT_PERCENT = 4 // Space after last tooth
+
 export default function Comb({ activeTeeth = new Set() }) {
   const numTeeth = NOTES.length // 21 teeth
 
@@ -8,13 +12,13 @@ export default function Comb({ activeTeeth = new Set() }) {
   const viewBoxHeight = 50
 
   // Mount plate extends past teeth on both sides
-  const plateMargin = 3 // How far plate extends past teeth
-  const teethStartX = plateMargin + 1 // Where first tooth starts
-  const teethEndX = viewBoxWidth - plateMargin - 1 // Where last tooth ends
+  const plateMargin = 4 // How far plate extends past teeth (matches padding export)
+  const teethStartX = plateMargin // Where first tooth starts
+  const teethEndX = viewBoxWidth - plateMargin // Where last tooth ends
   const teethSpan = teethEndX - teethStartX
 
   // Tooth positioning - evenly distributed within teeth area
-  const toothGap = 0.6 // Gap between teeth
+  const toothGap = 0.5 // Gap between teeth
   const totalGaps = (numTeeth - 1) * toothGap
   const toothWidth = (teethSpan - totalGaps) / numTeeth
 
@@ -23,7 +27,7 @@ export default function Comb({ activeTeeth = new Set() }) {
   const minToothLength = 12 // Shortest tooth (rightmost, G#5)
 
   // Base bar dimensions
-  const baseBottom = viewBoxHeight - 2 // Bottom of base bar
+  const baseBottom = viewBoxHeight - 2
 
   // Calculate tooth length based on index (0 = longest, 20 = shortest)
   const getToothLength = (index) => {
@@ -36,11 +40,6 @@ export default function Comb({ activeTeeth = new Set() }) {
     return teethStartX + index * (toothWidth + toothGap)
   }
 
-  // Export tooth positions for piano alignment (as percentage of total width)
-  // First tooth left edge and last tooth right edge
-  const firstToothLeftPercent = (teethStartX / viewBoxWidth) * 100
-  const lastToothRightPercent = ((teethStartX + (numTeeth - 1) * (toothWidth + toothGap) + toothWidth) / viewBoxWidth) * 100
-
   // The teeth all start at the top (Y = 2) and extend downward
   const teethTop = 2
 
@@ -49,72 +48,24 @@ export default function Comb({ activeTeeth = new Set() }) {
     return teethTop + getToothLength(index)
   }
 
-  // Create the trapezoidal base polygon - extends past teeth on both sides
-  const createBasePolygon = () => {
-    const points = []
+  // Simple 4-point trapezoid for mount base
+  // Top-left, top-right, bottom-right, bottom-left
+  const firstToothBottom = getToothBottom(0)
+  const lastToothBottom = getToothBottom(numTeeth - 1)
+  const baseTopLeft = firstToothBottom + 1
+  const baseTopRight = lastToothBottom + 1
 
-    // Bottom-left corner (full width)
-    points.push(`0,${baseBottom}`)
-
-    // Up left side to meet the angled top
-    const firstToothBottom = getToothBottom(0)
-    points.push(`0,${firstToothBottom + 2}`) // Slightly below first tooth
-
-    // Trace along just below the teeth bottoms (creating the angled top edge)
-    for (let i = 0; i < numTeeth; i++) {
-      const x = getToothX(i)
-      const toothBottom = getToothBottom(i)
-      // Add a small gap between tooth bottom and base top
-      points.push(`${x - 0.2},${toothBottom + 0.5}`)
-      points.push(`${x + toothWidth + 0.2},${toothBottom + 0.5}`)
-    }
-
-    // Right side - continue to full width
-    const lastToothBottom = getToothBottom(numTeeth - 1)
-    points.push(`${viewBoxWidth},${lastToothBottom + 2}`) // Slightly below last tooth
-
-    // Bottom-right corner
-    points.push(`${viewBoxWidth},${baseBottom}`)
-
-    return points.join(' ')
-  }
+  const trapezoidPoints = `0,${baseTopLeft} ${viewBoxWidth},${baseTopRight} ${viewBoxWidth},${baseBottom} 0,${baseBottom}`
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <svg
         viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
         className="w-full"
-        style={{ height: '250px' }} // 2.5x the original 100px
+        style={{ height: '250px' }}
         preserveAspectRatio="none"
       >
-        {/* Trapezoidal base/mount plate - extends full width */}
-        <polygon
-          points={createBasePolygon()}
-          style={{ fill: 'var(--color-comb)' }}
-        />
-
-        {/* Bottom edge of mount plate */}
-        <rect
-          x="0"
-          y={baseBottom}
-          width={viewBoxWidth}
-          height="2"
-          style={{ fill: 'var(--color-comb)' }}
-        />
-
-        {/* Top highlight on mount plate */}
-        <line
-          x1="0"
-          y1={getToothBottom(0) + 2.5}
-          x2={viewBoxWidth}
-          y2={getToothBottom(numTeeth - 1) + 2.5}
-          style={{
-            stroke: 'rgba(255,255,255,0.1)',
-            strokeWidth: 0.5,
-          }}
-        />
-
-        {/* Teeth - all aligned at top, varying lengths */}
+        {/* Teeth - drawn first so base appears in front */}
         {NOTES.map((_, i) => {
           const isActive = activeTeeth.has(i)
           const x = getToothX(i)
@@ -162,15 +113,60 @@ export default function Comb({ activeTeeth = new Set() }) {
           )
         })}
 
-        {/* Mounting screws on the extended plate areas */}
-        <circle cx={plateMargin / 2 + 0.5} cy={baseBottom - 2} r="1.5" style={{ fill: '#555' }} />
-        <circle cx={plateMargin / 2 + 0.5} cy={baseBottom - 2} r="0.7" style={{ fill: '#333' }} />
-        <circle cx={viewBoxWidth - plateMargin / 2 - 0.5} cy={baseBottom - 2} r="1.5" style={{ fill: '#555' }} />
-        <circle cx={viewBoxWidth - plateMargin / 2 - 0.5} cy={baseBottom - 2} r="0.7" style={{ fill: '#333' }} />
+        {/* Simple flat trapezoid mount base - drawn after teeth (in front) */}
+        <polygon
+          points={trapezoidPoints}
+          style={{ fill: 'var(--color-comb)' }}
+        />
+
+        {/* Top edge highlight on mount base */}
+        <line
+          x1="0"
+          y1={baseTopLeft}
+          x2={viewBoxWidth}
+          y2={baseTopRight}
+          style={{
+            stroke: 'rgba(255,255,255,0.15)',
+            strokeWidth: 0.3,
+          }}
+        />
+
+        {/* Bottom edge shadow on mount base */}
+        <line
+          x1="0"
+          y1={baseBottom}
+          x2={viewBoxWidth}
+          y2={baseBottom}
+          style={{
+            stroke: 'rgba(0,0,0,0.3)',
+            strokeWidth: 0.3,
+          }}
+        />
       </svg>
+
+      {/* Mounting screws - rendered as CSS elements to maintain circular shape */}
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: '12px',
+          height: '12px',
+          left: '1.5%',
+          bottom: '12%',
+          background: 'radial-gradient(circle at 30% 30%, #666, #333)',
+          boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2), inset 0 -1px 2px rgba(0,0,0,0.3)',
+        }}
+      />
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: '12px',
+          height: '12px',
+          right: '1.5%',
+          bottom: '12%',
+          background: 'radial-gradient(circle at 30% 30%, #666, #333)',
+          boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2), inset 0 -1px 2px rgba(0,0,0,0.3)',
+        }}
+      />
     </div>
   )
 }
-
-// Export alignment values for piano (teeth span from ~4% to ~96% of width)
-export const COMB_TEETH_PADDING_PERCENT = 4 // Approximate padding on each side
