@@ -32,8 +32,8 @@ A browser-based music box simulator built with React 19, Vite, Tone.js, and Tail
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/christmas-music-box.git
-cd christmas-music-box
+git clone https://github.com/jacques-kruger-za/Christmas-Music-Box.git
+cd Christmas-Music-Box
 
 # Install dependencies
 npm install
