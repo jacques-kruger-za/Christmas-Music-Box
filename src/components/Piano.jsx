@@ -1,6 +1,9 @@
 import { NOTES, NOTE_DISPLAY_NAMES, BLACK_KEY_INDICES, WHITE_KEY_LABELS, BLACK_KEY_LABELS } from '../data/constants'
 import { getNotePosition } from '../utils/notePositions'
 
+// Padding to align piano keys with comb teeth (matches comb's plateMargin + 1)
+const PIANO_PADDING_PERCENT = 4 // ~4% on each side to align with teeth
+
 export default function Piano({ activeNotes = new Set(), onNotePlay }) {
   // Calculate white key positions for black keys
   const getBlackKeyPosition = (noteIndex) => {
@@ -23,7 +26,7 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
   const blackKeyWidth = whiteKeyWidth * 0.65
 
   return (
-    <div className="w-full">
+    <div className="w-full" style={{ padding: `0 ${PIANO_PADDING_PERCENT}%` }}>
       {/* Piano keyboard */}
       <div className="relative h-36 mb-1">
         {/* White keys */}
@@ -101,12 +104,17 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
         {NOTE_DISPLAY_NAMES.map((name, i) => {
           const isBlackKey = BLACK_KEY_INDICES.includes(i)
           const isActive = activeNotes.has(i)
+
+          // Calculate position within the padded area
+          const totalNotes = NOTES.length
+          const notePosition = (i / (totalNotes - 1)) * 100
+
           return (
             <div
               key={i}
               className="absolute transform -translate-x-1/2 py-1 transition-all duration-100"
               style={{
-                left: `${getNotePosition(i)}%`,
+                left: `${notePosition}%`,
                 fontSize: isBlackKey ? '9px' : '11px',
                 opacity: isActive ? 1 : 0.7,
                 fontWeight: isActive ? 'bold' : 'normal',
