@@ -221,7 +221,7 @@ export default function App() {
       <Header />
 
       <main className="flex-1 px-4 pb-8 max-w-6xl mx-auto w-full">
-        <div className="grid md:grid-cols-[380px_1fr] gap-6">
+        <div className="grid md:grid-cols-[380px_1fr] gap-6 items-stretch">
           {/* Control Panel */}
           <ControlPanel
             songs={defaultSongs}

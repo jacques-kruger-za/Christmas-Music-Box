@@ -73,10 +73,10 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
 
   return (
     <div
-      className="w-full rounded-lg relative overflow-hidden"
+      className="w-full h-full rounded-lg relative overflow-hidden"
       style={{
         background: 'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5))',
-        height: '160px',
+        minHeight: '160px',
       }}
     >
       {/* Pins - rendered as CSS circles */}

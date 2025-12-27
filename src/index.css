@@ -16,8 +16,9 @@
   --color-text: #ffffff;
   --color-text-muted: rgba(255, 255, 255, 0.6);
   --color-text-gold: #daa520;
-  --color-comb: #6b7280;
-  --color-comb-light: #9ca3af;
+  --color-comb: #4b5563;
+  --color-comb-tooth: #9ca3af;
+  --color-comb-light: #d1d5db;
   --color-comb-glow: rgba(218, 165, 32, 0.8);
   --color-pin: #daa520;
   --color-record: #dc2626;
@@ -46,8 +47,9 @@
   --color-text: #ffffff;
   --color-text-muted: rgba(255, 255, 255, 0.6);
   --color-text-gold: #87ceeb;
-  --color-comb: #6b7280;
-  --color-comb-light: #9ca3af;
+  --color-comb: #4b5563;
+  --color-comb-tooth: #9ca3af;
+  --color-comb-light: #d1d5db;
   --color-comb-glow: rgba(135, 206, 250, 0.8);
   --color-pin: #87ceeb;
   --color-record: #ef4444;
@@ -76,8 +78,9 @@
   --color-text: #ffffff;
   --color-text-muted: rgba(255, 255, 255, 0.6);
   --color-text-gold: #b8860b;
-  --color-comb: #6b7280;
-  --color-comb-light: #9ca3af;
+  --color-comb: #4b5563;
+  --color-comb-tooth: #9ca3af;
+  --color-comb-light: #d1d5db;
   --color-comb-glow: rgba(184, 134, 11, 0.8);
   --color-pin: #b8860b;
   --color-record: #dc2626;

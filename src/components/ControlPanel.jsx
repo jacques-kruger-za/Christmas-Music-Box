@@ -32,7 +32,7 @@ export default function ControlPanel({
 
   return (
     <div
-      className="rounded-xl p-1"
+      className="rounded-xl p-1 h-full flex flex-col"
       style={{
         background: 'var(--color-panel)',
         border: '1px solid var(--color-panel-border)',
@@ -68,7 +68,7 @@ export default function ControlPanel({
       </div>
 
       {/* Tab Content */}
-      <div className="p-4">
+      <div className="p-4 flex-1">
         {activeTab === 'select' ? (
           <SelectTab
             songs={songs}
