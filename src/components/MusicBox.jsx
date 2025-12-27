@@ -12,35 +12,38 @@ export default function MusicBox({
   onNotePlay,
 }) {
   return (
-    <div
-      className="rounded-xl p-4 relative"
-      style={{
-        background: 'var(--color-panel)',
-        border: '1px solid var(--color-panel-border)',
-        boxShadow: '0 0 20px rgba(0,0,0,0.3)',
-      }}
-    >
-      {/* Theme selector in top right */}
-      <div className="absolute top-4 right-4 z-10">
+    <div className="relative">
+      {/* Theme selector positioned outside top-right */}
+      <div className="absolute -top-12 right-0 z-10">
         <ThemeSelector />
       </div>
 
-      {/* Drum (pin cylinder) */}
-      <Drum
-        notes={notes}
-        currentTime={currentTime}
-        tempo={tempo}
-        isPlaying={isPlaying}
-      />
+      {/* Music Box container */}
+      <div
+        className="rounded-xl p-4"
+        style={{
+          background: 'var(--color-panel)',
+          border: '1px solid var(--color-panel-border)',
+          boxShadow: '0 0 20px rgba(0,0,0,0.3)',
+        }}
+      >
+        {/* Drum (pin cylinder) */}
+        <Drum
+          notes={notes}
+          currentTime={currentTime}
+          tempo={tempo}
+          isPlaying={isPlaying}
+        />
 
-      {/* Comb */}
-      <Comb activeTeeth={activeNotes} />
+        {/* Comb */}
+        <Comb activeTeeth={activeNotes} />
 
-      {/* Piano */}
-      <Piano
-        activeNotes={activeNotes}
-        onNotePlay={onNotePlay}
-      />
+        {/* Piano */}
+        <Piano
+          activeNotes={activeNotes}
+          onNotePlay={onNotePlay}
+        />
+      </div>
     </div>
   )
 }

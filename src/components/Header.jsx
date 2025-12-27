@@ -1,5 +1,3 @@
-import ThemeSelector from './ThemeSelector'
-
 export default function Header() {
   return (
     <header className="text-center py-6">

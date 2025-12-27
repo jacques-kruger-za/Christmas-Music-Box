@@ -3,12 +3,22 @@ import { NOTES } from '../data/constants'
 import { getNotePosition } from '../utils/notePositions'
 
 export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlaying = false }) {
-  // Calculate visible time window (show ~4 beats ahead)
+  // Calculate visible time window (show ~8 beats ahead)
   const visibleBeats = 8
   const secondsPerBeat = 60 / tempo
 
-  // Calculate pin positions
-  const pins = useMemo(() => {
+  // Calculate song duration
+  const songDuration = useMemo(() => {
+    if (!notes.length) return 0
+    let maxTime = 0
+    notes.forEach(({ time }) => {
+      if (time > maxTime) maxTime = time
+    })
+    return maxTime + 1 // Add 1 beat buffer after last note
+  }, [notes])
+
+  // Create base pins
+  const basePins = useMemo(() => {
     if (!notes.length) return []
 
     return notes.map(({ note, time }) => {
@@ -17,19 +27,42 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
 
       return {
         noteIndex,
-        time,
-        x: getNotePosition(noteIndex), // Use same positioning as piano/comb
-        timeOffset: time, // Time in beats
+        baseTime: time,
+        x: getNotePosition(noteIndex),
       }
     }).filter(Boolean)
   }, [notes])
 
-  // Filter pins to show only those within the visible window
+  // Calculate current beat position
   const currentBeat = currentTime / secondsPerBeat
-  const visiblePins = pins.filter(pin => {
-    const relativeBeat = pin.timeOffset - currentBeat
-    return relativeBeat >= -0.5 && relativeBeat <= visibleBeats
-  })
+
+  // Generate visible pins including lookahead copies for seamless looping
+  // This simulates a cylindrical drum that wraps around
+  const visiblePins = useMemo(() => {
+    if (!basePins.length || !songDuration) return []
+
+    const visible = []
+
+    basePins.forEach((pin, pinIndex) => {
+      // Check the pin at multiple "virtual" positions (cycles)
+      // This handles wrapping when the song loops
+      for (let cycle = -1; cycle <= 2; cycle++) {
+        const adjustedTime = pin.baseTime + (cycle * songDuration)
+        const relativeBeat = adjustedTime - currentBeat
+
+        // Only include if within visible window
+        if (relativeBeat >= -0.5 && relativeBeat <= visibleBeats) {
+          visible.push({
+            ...pin,
+            timeOffset: adjustedTime,
+            key: `${pinIndex}-${cycle}`,
+          })
+        }
+      }
+    })
+
+    return visible
+  }, [basePins, songDuration, currentBeat, visibleBeats])
 
   // Calculate Y position based on time (pins scroll down)
   const getYPercent = (pinTime) => {
@@ -46,19 +79,8 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
         height: '160px',
       }}
     >
-      {/* Strike zone indicator */}
-      <div
-        className="absolute left-0 right-0"
-        style={{
-          top: '90%',
-          height: '2px',
-          background: 'var(--color-accent)',
-          opacity: 0.5,
-        }}
-      />
-
       {/* Pins - rendered as CSS circles */}
-      {visiblePins.map((pin, i) => {
+      {visiblePins.map((pin) => {
         const yPercent = getYPercent(pin.timeOffset)
         const isAtStrike = yPercent > 85 && yPercent < 95
         const isNearStrike = yPercent > 75 && yPercent < 95
@@ -68,7 +90,7 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
 
         return (
           <div
-            key={`${pin.noteIndex}-${pin.timeOffset}-${i}`}
+            key={pin.key}
             className="absolute rounded-full transform -translate-x-1/2 -translate-y-1/2"
             style={{
               left: `${pin.x}%`,
@@ -88,7 +110,7 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
       })}
 
       {/* Empty state message */}
-      {pins.length === 0 && (
+      {notes.length === 0 && (
         <div
           className="absolute inset-0 flex items-center justify-center text-sm"
           style={{ color: 'var(--color-text-muted)' }}
