@@ -1,18 +1,18 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
-const themes = ['christmas', 'winter', 'classic']
+const themes = ['classic', 'christmas', 'winter']
 
 const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('musicbox-theme')
-    return saved && themes.includes(saved) ? saved : 'christmas'
+    return saved && themes.includes(saved) ? saved : 'classic'
   })
 
   useEffect(() => {
     const root = document.documentElement
-    if (theme === 'christmas') {
+    if (theme === 'classic') {
       root.removeAttribute('data-theme')
     } else {
       root.setAttribute('data-theme', theme)

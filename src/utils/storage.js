@@ -34,6 +34,18 @@ export function deleteRecording(index) {
   }
 }
 
+export function deleteRecordingByName(name) {
+  try {
+    const recordings = loadRecordings()
+    const filtered = recordings.filter(r => r.name !== name)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered))
+    return true
+  } catch (error) {
+    console.error('Failed to delete recording:', error)
+    return false
+  }
+}
+
 export function exportRecordings() {
   const recordings = loadRecordings()
   const dataStr = JSON.stringify(recordings, null, 2)

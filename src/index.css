@@ -2,38 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Christmas Theme (Default) */
+/* Classic Theme (Default) - Elegant dark with warm gold accents */
 :root {
-  --color-bg: #1a0a0a;
-  --color-bg-dark: #0d0505;
-  --color-bg-gradient-start: #2d1515;
-  --color-bg-gradient-end: #1a0a0a;
-  --color-panel: rgba(30, 15, 15, 0.9);
-  --color-panel-border: rgba(218, 165, 32, 0.3);
-  --color-accent: #daa520;
-  --color-accent-hover: #f4c430;
-  --color-accent-dark: #b8860b;
+  --color-bg: #1a1a1a;
+  --color-bg-dark: #0d0d0d;
+  --color-bg-gradient-start: #2d2d2d;
+  --color-bg-gradient-end: #1a1a1a;
+  --color-panel: rgba(30, 30, 30, 0.9);
+  --color-panel-border: rgba(184, 134, 11, 0.3);
+  --color-accent: #b8860b;
+  --color-accent-hover: #daa520;
+  --color-accent-dark: #8b6914;
   --color-text: #ffffff;
   --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-gold: #daa520;
+  --color-text-gold: #b8860b;
   --color-comb: #4b5563;
   --color-comb-tooth: #9ca3af;
   --color-comb-light: #d1d5db;
-  --color-comb-glow: rgba(218, 165, 32, 0.8);
-  --color-pin: #daa520;
+  --color-comb-glow: rgba(184, 134, 11, 0.8);
+  --color-pin: #b8860b;
   --color-record: #dc2626;
   --color-record-glow: rgba(220, 38, 38, 0.4);
-  --color-tab-active: #daa520;
-  --color-tab-inactive: rgba(75, 55, 55, 0.8);
-  --color-button-bg: rgba(75, 55, 55, 0.6);
-  --color-button-border: rgba(218, 165, 32, 0.4);
+  --color-tab-active: #b8860b;
+  --color-tab-inactive: rgba(60, 60, 60, 0.8);
+  --color-button-bg: rgba(60, 60, 60, 0.6);
+  --color-button-border: rgba(184, 134, 11, 0.4);
   --color-slider-track: rgba(255, 255, 255, 0.2);
-  --color-slider-thumb: #daa520;
-  --color-toggle-bg: rgba(75, 55, 55, 0.8);
-  --color-toggle-active: #daa520;
+  --color-slider-thumb: #b8860b;
+  --color-toggle-bg: rgba(60, 60, 60, 0.8);
+  --color-toggle-active: #b8860b;
 }
 
-/* Winter Theme */
+/* Christmas Theme - Rich festive colors: holly red, evergreen, and gold */
+[data-theme="christmas"] {
+  --color-bg: #0f1a12;
+  --color-bg-dark: #0a120c;
+  --color-bg-gradient-start: #1a2e1f;
+  --color-bg-gradient-end: #0f1a12;
+  --color-panel: rgba(20, 35, 25, 0.92);
+  --color-panel-border: rgba(196, 30, 58, 0.4);
+  --color-accent: #c41e3a;
+  --color-accent-hover: #e63950;
+  --color-accent-dark: #9a1830;
+  --color-text: #fff8f0;
+  --color-text-muted: rgba(255, 248, 240, 0.6);
+  --color-text-gold: #ffd700;
+  --color-comb: #2d5a3d;
+  --color-comb-tooth: #4a9960;
+  --color-comb-light: #6bc47f;
+  --color-comb-glow: rgba(255, 215, 0, 0.8);
+  --color-pin: #ffd700;
+  --color-record: #c41e3a;
+  --color-record-glow: rgba(196, 30, 58, 0.5);
+  --color-tab-active: #c41e3a;
+  --color-tab-inactive: rgba(45, 90, 61, 0.8);
+  --color-button-bg: rgba(45, 90, 61, 0.6);
+  --color-button-border: rgba(196, 30, 58, 0.5);
+  --color-slider-track: rgba(255, 255, 255, 0.2);
+  --color-slider-thumb: #ffd700;
+  --color-toggle-bg: rgba(45, 90, 61, 0.8);
+  --color-toggle-active: #c41e3a;
+}
+
+/* Winter Theme - Cool icy blues and silvers */
 [data-theme="winter"] {
   --color-bg: #0a1628;
   --color-bg-dark: #050d1a;
@@ -62,37 +93,6 @@
   --color-slider-thumb: #87ceeb;
   --color-toggle-bg: rgba(45, 65, 95, 0.8);
   --color-toggle-active: #87ceeb;
-}
-
-/* Classic Theme */
-[data-theme="classic"] {
-  --color-bg: #1a1a1a;
-  --color-bg-dark: #0d0d0d;
-  --color-bg-gradient-start: #2d2d2d;
-  --color-bg-gradient-end: #1a1a1a;
-  --color-panel: rgba(30, 30, 30, 0.9);
-  --color-panel-border: rgba(184, 134, 11, 0.3);
-  --color-accent: #b8860b;
-  --color-accent-hover: #daa520;
-  --color-accent-dark: #8b6914;
-  --color-text: #ffffff;
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-gold: #b8860b;
-  --color-comb: #4b5563;
-  --color-comb-tooth: #9ca3af;
-  --color-comb-light: #d1d5db;
-  --color-comb-glow: rgba(184, 134, 11, 0.8);
-  --color-pin: #b8860b;
-  --color-record: #dc2626;
-  --color-record-glow: rgba(220, 38, 38, 0.4);
-  --color-tab-active: #b8860b;
-  --color-tab-inactive: rgba(60, 60, 60, 0.8);
-  --color-button-bg: rgba(60, 60, 60, 0.6);
-  --color-button-border: rgba(184, 134, 11, 0.4);
-  --color-slider-track: rgba(255, 255, 255, 0.2);
-  --color-slider-thumb: #b8860b;
-  --color-toggle-bg: rgba(60, 60, 60, 0.8);
-  --color-toggle-active: #b8860b;
 }
 
 * {

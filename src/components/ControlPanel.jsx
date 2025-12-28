@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import SelectTab from './SelectTab'
 import RecordTab from './RecordTab'
 
@@ -27,8 +26,10 @@ export default function ControlPanel({
   onMetronomeChange,
   onExport,
   onImport,
+  activeTab,
+  onTabChange,
+  onDeleteRecording,
 }) {
-  const [activeTab, setActiveTab] = useState('select')
 
   return (
     <div
@@ -49,7 +50,7 @@ export default function ControlPanel({
             background: activeTab === 'select' ? 'var(--color-tab-active)' : 'var(--color-tab-inactive)',
             color: activeTab === 'select' ? '#000' : 'var(--color-text)',
           }}
-          onClick={() => setActiveTab('select')}
+          onClick={() => onTabChange('select')}
         >
           Select
         </button>
@@ -61,15 +62,16 @@ export default function ControlPanel({
             background: activeTab === 'record' ? 'var(--color-tab-active)' : 'var(--color-tab-inactive)',
             color: activeTab === 'record' ? '#000' : 'var(--color-text)',
           }}
-          onClick={() => setActiveTab('record')}
+          onClick={() => onTabChange('record')}
         >
           Record
         </button>
       </div>
 
-      {/* Tab Content */}
-      <div className="p-4 flex-1">
-        {activeTab === 'select' ? (
+      {/* Tab Content - Both tabs rendered, inactive one hidden but still contributes to height */}
+      <div className="p-4 flex-1 overflow-y-auto relative">
+        {/* Select tab - always rendered to maintain consistent height */}
+        <div className={activeTab === 'select' ? '' : 'invisible'}>
           <SelectTab
             songs={songs}
             recordings={recordings}
@@ -86,8 +88,14 @@ export default function ControlPanel({
             onRepeatChange={onRepeatChange}
             onExport={onExport}
             onImport={onImport}
+            onDeleteRecording={onDeleteRecording}
           />
-        ) : (
+        </div>
+
+        {/* Record tab - absolutely positioned over Select tab area */}
+        <div
+          className={`absolute inset-0 p-4 ${activeTab === 'record' ? '' : 'invisible pointer-events-none'}`}
+        >
           <RecordTab
             isRecording={isRecording}
             onStartRecording={onStartRecording}
@@ -99,7 +107,7 @@ export default function ControlPanel({
             metronome={metronome}
             onMetronomeChange={onMetronomeChange}
           />
-        )}
+        </div>
       </div>
     </div>
   )

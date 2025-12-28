@@ -1,4 +1,4 @@
-import { NOTES, NOTE_DISPLAY_NAMES, BLACK_KEY_INDICES, WHITE_KEY_LABELS, BLACK_KEY_LABELS } from '../data/constants'
+import { NOTES, BLACK_KEY_INDICES, WHITE_KEY_LABELS, BLACK_KEY_LABELS } from '../data/constants'
 import { COMB_PADDING_LEFT_PERCENT, COMB_PADDING_RIGHT_PERCENT } from './Comb'
 
 export default function Piano({ activeNotes = new Set(), onNotePlay }) {
@@ -46,18 +46,18 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
                 className="relative flex-1 rounded-b-md border border-gray-300 transition-all duration-100"
                 style={{
                   background: isActive
-                    ? 'linear-gradient(to bottom, #ffd700, #daa520)'
+                    ? `linear-gradient(to bottom, var(--color-accent-hover), var(--color-accent))`
                     : 'linear-gradient(to bottom, #ffffff, #e8e8e8)',
                   boxShadow: isActive
-                    ? 'inset 0 3px 8px rgba(0,0,0,0.3), 0 0 15px rgba(218,165,32,0.5)'
+                    ? 'inset 0 3px 8px rgba(0,0,0,0.3), 0 0 15px var(--color-comb-glow)'
                     : '0 2px 4px rgba(0,0,0,0.3)',
                   transform: isActive ? 'translateY(2px)' : 'translateY(0)',
                 }}
                 onClick={() => onNotePlay && onNotePlay(noteIndex)}
               >
                 <span
-                  className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs font-mono transition-colors duration-100"
-                  style={{ color: isActive ? '#000' : '#666' }}
+                  className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm font-mono font-medium transition-colors duration-100"
+                  style={{ color: isActive ? '#000' : '#555' }}
                 >
                   {label}
                 </span>
@@ -81,18 +81,18 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
                   left: `${leftPercent}%`,
                   width: `${blackKeyWidth}%`,
                   background: isActive
-                    ? 'linear-gradient(to bottom, #daa520, #b8860b)'
+                    ? `linear-gradient(to bottom, var(--color-accent), var(--color-accent-dark))`
                     : 'linear-gradient(to bottom, #2a2a2a, #000)',
                   boxShadow: isActive
-                    ? 'inset 0 2px 6px rgba(0,0,0,0.4), 0 0 12px rgba(218,165,32,0.6)'
+                    ? 'inset 0 2px 6px rgba(0,0,0,0.4), 0 0 12px var(--color-comb-glow)'
                     : '0 3px 6px rgba(0,0,0,0.5)',
                   transform: isActive ? 'translateY(2px)' : 'translateY(0)',
                 }}
                 onClick={() => onNotePlay && onNotePlay(noteIndex)}
               >
                 <span
-                  className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] font-mono transition-colors duration-100"
-                  style={{ color: isActive ? '#000' : '#888' }}
+                  className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs font-mono font-medium transition-colors duration-100"
+                  style={{ color: isActive ? '#000' : '#999' }}
                 >
                   {BLACK_KEY_LABELS[i]}
                 </span>
@@ -100,35 +100,6 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
             )
           })}
         </div>
-      </div>
-
-      {/* Note labels - positioned to match keys, overflow hidden to clip glow effects */}
-      <div className="relative h-6 text-xs overflow-hidden" style={{ color: 'var(--color-text-gold)' }}>
-        {NOTE_DISPLAY_NAMES.map((name, i) => {
-          const isBlackKey = BLACK_KEY_INDICES.includes(i)
-          const isActive = activeNotes.has(i)
-
-          // Calculate position within the padded area
-          const totalNotes = NOTES.length
-          const notePosition = (i / (totalNotes - 1)) * 100
-
-          return (
-            <div
-              key={i}
-              className="absolute transform -translate-x-1/2 py-1 transition-all duration-100"
-              style={{
-                left: `${notePosition}%`,
-                fontSize: isBlackKey ? '9px' : '11px',
-                opacity: isActive ? 1 : 0.7,
-                fontWeight: isActive ? 'bold' : 'normal',
-                textShadow: isActive ? '0 0 8px var(--color-accent)' : 'none',
-                transform: `translateX(-50%) scale(${isActive ? 1.2 : 1})`,
-              }}
-            >
-              {name}
-            </div>
-          )
-        })}
       </div>
     </div>
   )

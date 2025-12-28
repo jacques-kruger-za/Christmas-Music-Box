@@ -1,5 +1,6 @@
 import Drum from './Drum'
 import Comb from './Comb'
+import NoteLabels from './NoteLabels'
 import Piano from './Piano'
 import ThemeSelector from './ThemeSelector'
 
@@ -10,6 +11,11 @@ export default function MusicBox({
   isPlaying = false,
   activeNotes = new Set(),
   onNotePlay,
+  isRecording = false,
+  recordedNotes = [],
+  recordingTime = 0,
+  recordingTempo = 100,
+  isRecordTab = false,
 }) {
   return (
     <div className="relative h-full">
@@ -30,37 +36,25 @@ export default function MusicBox({
         {/* Drum (pin cylinder) - shrunk to accommodate larger comb */}
         <div className="flex-1 min-h-[100px]">
           <Drum
-            notes={notes}
-            currentTime={currentTime}
-            tempo={tempo}
+            notes={isRecordTab ? recordedNotes : notes}
+            currentTime={isRecordTab ? recordingTime : currentTime}
+            tempo={isRecordTab ? recordingTempo : tempo}
             isPlaying={isPlaying}
+            isRecording={isRecording}
+            isRecordTab={isRecordTab}
           />
         </div>
 
         {/* Comb - flush with drum above */}
         <Comb activeTeeth={activeNotes} />
 
-        {/* Stylish divider - evenly spaced between comb and piano */}
-        <div className="mt-6 py-2 px-4">
-          <div
-            className="relative h-[2px] rounded-full"
-            style={{
-              background: 'linear-gradient(90deg, transparent, var(--color-accent), transparent)',
-            }}
-          >
-            {/* Center decorative element */}
-            <div
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
-              style={{
-                background: 'var(--color-accent)',
-                boxShadow: '0 0 8px var(--color-accent)',
-              }}
-            />
-          </div>
+        {/* Note labels bridge between comb and piano */}
+        <div className="mt-4 mb-2">
+          <NoteLabels activeNotes={activeNotes} />
         </div>
 
         {/* Piano */}
-        <div className="mt-6">
+        <div className="mt-2">
           <Piano
             activeNotes={activeNotes}
             onNotePlay={onNotePlay}

@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { MIN_TEMPO, MAX_TEMPO, TEMPO_PRESETS } from '../data/constants'
+import SongSelector from './SongSelector'
 
 export default function SelectTab({
   songs,
@@ -17,6 +18,7 @@ export default function SelectTab({
   onRepeatChange,
   onExport,
   onImport,
+  onDeleteRecording,
 }) {
   const fileInputRef = useRef(null)
   const allSongs = [...songs, ...recordings]
@@ -46,32 +48,13 @@ export default function SelectTab({
         >
           Choose a Song
         </label>
-        <select
-          value={selectedSong}
-          onChange={(e) => onSelectSong(e.target.value)}
-          className="w-full p-3 rounded-lg text-white appearance-none cursor-pointer"
-          style={{
-            background: 'var(--color-button-bg)',
-            border: '1px solid var(--color-button-border)',
-          }}
-        >
-          <option value="">-- Select --</option>
-          {songs.map(song => (
-            <option key={song.name} value={song.name}>
-              {song.name}
-            </option>
-          ))}
-          {recordings.length > 0 && (
-            <>
-              <option disabled>── Your Recordings ──</option>
-              {recordings.map(song => (
-                <option key={song.name} value={song.name}>
-                  {song.name}
-                </option>
-              ))}
-            </>
-          )}
-        </select>
+        <SongSelector
+          songs={songs}
+          recordings={recordings}
+          selectedSong={selectedSong}
+          onSelectSong={onSelectSong}
+          onDeleteRecording={onDeleteRecording}
+        />
       </div>
 
       {/* Export/Import Buttons */}

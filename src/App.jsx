@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import Header from './components/Header'
 import ControlPanel from './components/ControlPanel'
 import MusicBox from './components/MusicBox'
+import Dialog from './components/Dialog'
 import { useAudio } from './hooks/useAudio'
 import { useKeyboardInput } from './hooks/useKeyboardInput'
 import { useRecording } from './hooks/useRecording'
 import { songs as defaultSongs } from './data/songs'
-import { loadRecordings, saveRecording, exportRecordings, importRecordings } from './utils/storage'
+import { loadRecordings, saveRecording, exportRecordings, importRecordings, deleteRecordingByName } from './utils/storage'
 import { DEFAULT_TEMPO, TEMPO_PRESETS } from './data/constants'
 
 export default function App() {
@@ -36,13 +37,24 @@ export default function App() {
   const [repeat, setRepeat] = useState(false)
   const [activeNotes, setActiveNotes] = useState(new Set())
   const [currentTime, setCurrentTime] = useState(0)
+  const [activeTab, setActiveTab] = useState('select')
+
+  // Dialog state
+  const [deleteDialog, setDeleteDialog] = useState({ isOpen: false, songName: '' })
+  const [saveDialog, setSaveDialog] = useState({ isOpen: false })
+  const pendingRecordingRef = useRef(null)
 
   // Recording state
   const [recordingTempo, setRecordingTempo] = useState(TEMPO_PRESETS.moderato.bpm)
   const [timeSignature, setTimeSignature] = useState('4/4')
   const [metronome, setMetronome] = useState(false)
 
-  const { isRecording, startRecording, stopRecording, recordNote, createSong } = useRecording(recordingTempo)
+  const { isRecording, recordedNotes, startRecording, stopRecording, recordNote, createSong } = useRecording(recordingTempo)
+
+  // Track recording time for drum visualization
+  const [recordingTime, setRecordingTime] = useState(0)
+  const recordingTimeRef = useRef(null)
+  const recordingStartRef = useRef(null)
 
   // Time update interval
   const timeIntervalRef = useRef(null)
@@ -169,6 +181,14 @@ export default function App() {
       startMetronome(recordingTempo, timeSignature)
     }
 
+    // Start tracking recording time for drum visualization (in seconds, like playback)
+    recordingStartRef.current = Date.now()
+    setRecordingTime(0)
+    recordingTimeRef.current = setInterval(() => {
+      const elapsedMs = Date.now() - recordingStartRef.current
+      setRecordingTime(elapsedMs / 1000)  // Seconds, not beats - Drum will convert
+    }, 50)
+
     startRecording()
   }, [initAudio, startRecording, metronome, startMetronome, recordingTempo, timeSignature])
 
@@ -179,17 +199,65 @@ export default function App() {
       stopMetronome()
     }
 
+    // Stop recording time tracking
+    if (recordingTimeRef.current) {
+      clearInterval(recordingTimeRef.current)
+      recordingTimeRef.current = null
+    }
+    setRecordingTime(0)
+
     const notes = stopRecording()
 
     if (notes.length > 0) {
-      const name = prompt('Enter a name for your recording:')
-      if (name) {
-        const song = createSong(name, timeSignature)
-        saveRecording(song)
-        setRecordings(loadRecordings())
-      }
+      // Store pending recording and show save dialog
+      pendingRecordingRef.current = notes
+      setSaveDialog({ isOpen: true })
     }
-  }, [stopRecording, createSong, timeSignature, isMetronomeRunning, stopMetronome])
+  }, [stopRecording, isMetronomeRunning, stopMetronome])
+
+  // Handle save recording confirmation
+  const handleSaveRecording = useCallback((name) => {
+    if (pendingRecordingRef.current) {
+      const song = createSong(name, timeSignature)
+      saveRecording(song)
+      const updatedRecordings = loadRecordings()
+      setRecordings(updatedRecordings)
+      // Auto-select the new recording and switch to Select tab
+      setSelectedSong(name)
+      setTempo(song.tempo)
+      setActiveTab('select')
+      pendingRecordingRef.current = null
+    }
+    setSaveDialog({ isOpen: false })
+  }, [createSong, timeSignature])
+
+  // Handle save dialog cancel
+  const handleCancelSave = useCallback(() => {
+    pendingRecordingRef.current = null
+    setSaveDialog({ isOpen: false })
+  }, [])
+
+  // Handle delete recording request (opens confirmation dialog)
+  const handleDeleteRequest = useCallback((songName) => {
+    setDeleteDialog({ isOpen: true, songName })
+  }, [])
+
+  // Handle delete confirmation
+  const handleDeleteConfirm = useCallback(() => {
+    const { songName } = deleteDialog
+    deleteRecordingByName(songName)
+    setRecordings(loadRecordings())
+    // Clear selection if deleted song was selected
+    if (selectedSong === songName) {
+      setSelectedSong('')
+    }
+    setDeleteDialog({ isOpen: false, songName: '' })
+  }, [deleteDialog, selectedSong])
+
+  // Handle delete cancel
+  const handleDeleteCancel = useCallback(() => {
+    setDeleteDialog({ isOpen: false, songName: '' })
+  }, [])
 
   // Handle export
   const handleExport = useCallback(() => {
@@ -212,6 +280,9 @@ export default function App() {
     return () => {
       if (timeIntervalRef.current) {
         clearInterval(timeIntervalRef.current)
+      }
+      if (recordingTimeRef.current) {
+        clearInterval(recordingTimeRef.current)
       }
     }
   }, [])
@@ -248,6 +319,9 @@ export default function App() {
             onMetronomeChange={setMetronome}
             onExport={handleExport}
             onImport={handleImport}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            onDeleteRecording={handleDeleteRequest}
           />
 
           {/* Music Box */}
@@ -258,9 +332,40 @@ export default function App() {
             isPlaying={isPlaying}
             activeNotes={combinedActiveNotes}
             onNotePlay={handleNotePlay}
+            isRecording={isRecording}
+            recordedNotes={recordedNotes}
+            recordingTime={recordingTime}
+            recordingTempo={recordingTempo}
+            isRecordTab={activeTab === 'record'}
           />
         </div>
       </main>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        isOpen={deleteDialog.isOpen}
+        onClose={handleDeleteCancel}
+        title="Delete Recording"
+        message={`Are you sure you want to delete "${deleteDialog.songName}"? This cannot be undone.`}
+        type="confirm"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleDeleteConfirm}
+        danger={true}
+      />
+
+      {/* Save Recording Dialog */}
+      <Dialog
+        isOpen={saveDialog.isOpen}
+        onClose={handleCancelSave}
+        title="Save Recording"
+        message="Enter a name for your recording"
+        type="input"
+        confirmText="Save"
+        cancelText="Cancel"
+        onConfirm={handleSaveRecording}
+        inputPlaceholder="Recording name..."
+      />
 
       {/* Audio init prompt */}
       {!isReady && (

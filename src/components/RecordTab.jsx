@@ -125,21 +125,6 @@ export default function RecordTab({
         <p>Press keys q-] and 2-Backspace to play notes</p>
         <p>Notes will be recorded with timing</p>
       </div>
-
-      {/* Song selector link styled like screenshot */}
-      <button
-        className="w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all hover:opacity-90"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(50,30,30,0.8), rgba(30,15,15,0.9))',
-          borderTop: '1px solid var(--color-accent)',
-        }}
-        onClick={() => {/* Would switch to Select tab */}}
-      >
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style={{ color: 'var(--color-text)' }}>
-          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-        </svg>
-        <span>Select a Song</span>
-      </button>
     </div>
   )
 }
