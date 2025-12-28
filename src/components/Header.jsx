@@ -5,7 +5,7 @@ export default function Header() {
         className="text-4xl md:text-5xl font-display italic"
         style={{ color: 'var(--color-accent)' }}
       >
-        Christmas Music Box
+        Music Box Simulator
       </h1>
     </header>
   )

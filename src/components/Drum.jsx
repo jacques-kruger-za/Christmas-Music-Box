@@ -1,6 +1,22 @@
 import { useMemo } from 'react'
 import { NOTES } from '../data/constants'
-import { getNotePosition } from '../utils/notePositions'
+import { COMB_PADDING_LEFT_PERCENT, COMB_PADDING_RIGHT_PERCENT } from './Comb'
+
+// Calculate tooth center position matching the comb exactly
+function getToothCenterPosition(noteIndex) {
+  const numTeeth = NOTES.length // 21
+  const teethStartX = COMB_PADDING_LEFT_PERCENT // 4
+  const teethEndX = 100 - COMB_PADDING_RIGHT_PERCENT // 96
+  const teethSpan = teethEndX - teethStartX // 92
+
+  const toothGap = 0.5
+  const totalGaps = (numTeeth - 1) * toothGap
+  const toothWidth = (teethSpan - totalGaps) / numTeeth
+
+  // Calculate left edge of tooth, then add half width for center
+  const toothX = teethStartX + noteIndex * (toothWidth + toothGap)
+  return toothX + toothWidth / 2
+}
 
 export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlaying = false }) {
   // Calculate visible time window (show ~8 beats ahead)
@@ -28,7 +44,7 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
       return {
         noteIndex,
         baseTime: time,
-        x: getNotePosition(noteIndex),
+        x: getToothCenterPosition(noteIndex),
       }
     }).filter(Boolean)
   }, [notes])
@@ -73,17 +89,17 @@ export default function Drum({ notes = [], currentTime = 0, tempo = 100, isPlayi
 
   return (
     <div
-      className="w-full h-full rounded-lg relative overflow-hidden"
+      className="w-full h-full relative overflow-hidden"
       style={{
-        background: 'linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5))',
         minHeight: '100px',
       }}
     >
       {/* Pins - rendered as CSS circles */}
       {visiblePins.map((pin) => {
         const yPercent = getYPercent(pin.timeOffset)
-        const isAtStrike = yPercent > 85 && yPercent < 95
-        const isNearStrike = yPercent > 75 && yPercent < 95
+        // Narrower strike zone - triggers closer to actual note play time
+        const isAtStrike = yPercent > 88 && yPercent < 95
+        const isNearStrike = yPercent > 82 && yPercent < 95
 
         // Size: normal 8px, near strike 10px, at strike 14px
         const size = isAtStrike ? 14 : isNearStrike ? 10 : 8

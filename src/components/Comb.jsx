@@ -9,7 +9,7 @@ export default function Comb({ activeTeeth = new Set() }) {
 
   // Comb dimensions (in viewBox units)
   const viewBoxWidth = 100
-  const viewBoxHeight = 50
+  const viewBoxHeight = 75 // Increased to fit longer teeth
 
   // Mount plate extends past teeth on both sides
   const plateMargin = 4 // How far plate extends past teeth (matches padding export)
@@ -23,8 +23,9 @@ export default function Comb({ activeTeeth = new Set() }) {
   const toothWidth = (teethSpan - totalGaps) / numTeeth
 
   // Tooth lengths - longer on left (low pitch), shorter on right (high pitch)
-  const maxToothLength = 32 // Longest tooth (leftmost, C4)
-  const minToothLength = 12 // Shortest tooth (rightmost, G#5)
+  // 2.5x the previous values (24 * 2.5 = 60, 8 * 2.5 = 20)
+  const maxToothLength = 60 // Longest tooth (leftmost, C4)
+  const minToothLength = 20 // Shortest tooth (rightmost, G#5)
 
   // Base bar dimensions
   const baseBottom = viewBoxHeight - 2
@@ -40,8 +41,8 @@ export default function Comb({ activeTeeth = new Set() }) {
     return teethStartX + index * (toothWidth + toothGap)
   }
 
-  // The teeth all start at the top (Y = 2) and extend downward
-  const teethTop = 2
+  // Teeth start at top (flush with drum above)
+  const teethTop = 0
 
   // Calculate the Y position where each tooth ends (bottom of tooth)
   const getToothBottom = (index) => {
@@ -50,19 +51,22 @@ export default function Comb({ activeTeeth = new Set() }) {
 
   // Simple 4-point trapezoid for mount base
   // Top-left, top-right, bottom-right, bottom-left
+  // Teeth overlap INTO the base (base top is above where teeth end)
+  const baseTopPadding = 2 // How far above the shortest tooth bottom the base starts
   const firstToothBottom = getToothBottom(0)
   const lastToothBottom = getToothBottom(numTeeth - 1)
-  const baseTopLeft = firstToothBottom + 1
-  const baseTopRight = lastToothBottom + 1
+  // Base top follows the angle but sits higher (teeth overlap into it)
+  const baseTopLeft = firstToothBottom - 6 // Base starts 6 units above longest tooth bottom
+  const baseTopRight = lastToothBottom - baseTopPadding // Base starts 2 units above shortest tooth bottom
 
   const trapezoidPoints = `0,${baseTopLeft} ${viewBoxWidth},${baseTopRight} ${viewBoxWidth},${baseBottom} 0,${baseBottom}`
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative overflow-hidden">
       <svg
         viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
         className="w-full"
-        style={{ height: '250px' }}
+        style={{ height: '200px' }}
         preserveAspectRatio="none"
       >
         {/* Teeth - drawn first so base appears in front */}

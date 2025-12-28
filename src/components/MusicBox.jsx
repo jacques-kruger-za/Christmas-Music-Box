@@ -37,11 +37,11 @@ export default function MusicBox({
           />
         </div>
 
-        {/* Comb - now 2.5x height */}
+        {/* Comb - flush with drum above */}
         <Comb activeTeeth={activeNotes} />
 
-        {/* Stylish divider between comb and piano */}
-        <div className="py-4 px-4">
+        {/* Stylish divider - evenly spaced between comb and piano */}
+        <div className="mt-6 py-2 px-4">
           <div
             className="relative h-[2px] rounded-full"
             style={{
@@ -60,10 +60,12 @@ export default function MusicBox({
         </div>
 
         {/* Piano */}
-        <Piano
-          activeNotes={activeNotes}
-          onNotePlay={onNotePlay}
-        />
+        <div className="mt-6">
+          <Piano
+            activeNotes={activeNotes}
+            onNotePlay={onNotePlay}
+          />
+        </div>
       </div>
     </div>
   )

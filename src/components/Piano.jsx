@@ -102,8 +102,8 @@ export default function Piano({ activeNotes = new Set(), onNotePlay }) {
         </div>
       </div>
 
-      {/* Note labels - positioned to match keys */}
-      <div className="relative h-6 text-xs" style={{ color: 'var(--color-text-gold)' }}>
+      {/* Note labels - positioned to match keys, overflow hidden to clip glow effects */}
+      <div className="relative h-6 text-xs overflow-hidden" style={{ color: 'var(--color-text-gold)' }}>
         {NOTE_DISPLAY_NAMES.map((name, i) => {
           const isBlackKey = BLACK_KEY_INDICES.includes(i)
           const isActive = activeNotes.has(i)
