@@ -59,6 +59,9 @@ export default function App() {
   // Time update interval
   const timeIntervalRef = useRef(null)
 
+  // Freeze tempo at playback start so drum stays in sync with scheduled audio
+  const playbackTempoRef = useRef(tempo)
+
   // Load recordings on mount
   useEffect(() => {
     setRecordings(loadRecordings())
@@ -97,12 +100,23 @@ export default function App() {
 
   // Handle song selection
   const handleSelectSong = useCallback((songName) => {
+    // Stop current playback if active
+    if (isPlaying || isPaused) {
+      stop()
+      setIsPaused(false)
+      if (timeIntervalRef.current) {
+        clearInterval(timeIntervalRef.current)
+      }
+      setCurrentTime(0)
+      setActiveNotes(new Set())
+    }
+
     setSelectedSong(songName)
     const song = allSongs.find(s => s.name === songName)
     if (song) {
       setTempo(song.tempo)
     }
-  }, [allSongs])
+  }, [allSongs, isPlaying, isPaused, stop])
 
   // Handle playback
   const handlePlay = useCallback(async () => {
@@ -120,6 +134,9 @@ export default function App() {
 
     await initAudio()
     setCurrentTime(0)
+
+    // Freeze tempo for this playback session
+    playbackTempoRef.current = tempo
 
     // Start time tracking
     timeIntervalRef.current = setInterval(() => {
@@ -328,7 +345,7 @@ export default function App() {
           <MusicBox
             notes={currentSong?.notes || []}
             currentTime={currentTime}
-            tempo={tempo}
+            tempo={(isPlaying || isPaused) ? playbackTempoRef.current : tempo}
             isPlaying={isPlaying}
             activeNotes={combinedActiveNotes}
             onNotePlay={handleNotePlay}

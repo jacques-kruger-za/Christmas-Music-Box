@@ -25,6 +25,7 @@ export default function SelectTab({
   const currentSong = allSongs.find(s => s.name === selectedSong)
   const baseTempo = currentSong?.tempo || 100
   const speedPercent = Math.round((tempo / baseTempo) * 100)
+  const tempoLocked = isPlaying || isPaused
 
   const handleImportClick = () => {
     fileInputRef.current?.click()
@@ -106,9 +107,10 @@ export default function SelectTab({
             <button
               key={key}
               onClick={() => onTempoChange(preset.bpm)}
+              disabled={tempoLocked}
               className={`flex-1 py-2 px-2 rounded-lg transition-all ${
                 tempo === preset.bpm ? 'ring-2' : ''
-              }`}
+              } ${tempoLocked ? 'opacity-50 cursor-not-allowed' : ''}`}
               style={{
                 background: 'var(--color-button-bg)',
                 border: `1px solid ${tempo === preset.bpm ? 'var(--color-accent)' : 'var(--color-button-border)'}`,
@@ -139,10 +141,11 @@ export default function SelectTab({
       </div>
 
       {/* Tempo Slider */}
-      <div className="flex items-center gap-3">
+      <div className={`flex items-center gap-3 ${tempoLocked ? 'opacity-50' : ''}`}>
         <button
           onClick={() => onTempoChange(Math.max(MIN_TEMPO, tempo - 5))}
-          className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold"
+          disabled={tempoLocked}
+          className={`w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold ${tempoLocked ? 'cursor-not-allowed' : ''}`}
           style={{
             background: 'var(--color-accent)',
             color: '#000',
@@ -156,14 +159,16 @@ export default function SelectTab({
           max={MAX_TEMPO}
           value={tempo}
           onChange={(e) => onTempoChange(Number(e.target.value))}
-          className="flex-1 h-2 rounded-full appearance-none cursor-pointer"
+          disabled={tempoLocked}
+          className={`flex-1 h-2 rounded-full appearance-none ${tempoLocked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
           style={{
             background: `linear-gradient(to right, var(--color-accent) ${((tempo - MIN_TEMPO) / (MAX_TEMPO - MIN_TEMPO)) * 100}%, var(--color-slider-track) 0%)`,
           }}
         />
         <button
           onClick={() => onTempoChange(Math.min(MAX_TEMPO, tempo + 5))}
-          className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold"
+          disabled={tempoLocked}
+          className={`w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold ${tempoLocked ? 'cursor-not-allowed' : ''}`}
           style={{
             background: 'var(--color-accent)',
             color: '#000',
